@@ -1,8 +1,7 @@
 import Navbar from "@/components/shared/navbar";
-import { ChildProps } from "@/types";
 import React from "react";
 
-const RootLayout = ({ children }: ChildProps) => {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
       <Navbar />
