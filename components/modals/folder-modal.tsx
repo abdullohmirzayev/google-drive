@@ -26,6 +26,7 @@ import { Input } from "../ui/input";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useUser } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 const FolderModal = () => {
   const { isOpen, onClose } = useFolder();
@@ -47,6 +48,12 @@ const FolderModal = () => {
     }).then(() => {
       form.reset();
       onClose();
+    });
+
+    toast.promise(promise, {
+      loading: "Loading...",
+      success: "Folder created",
+      error: 'Error creating folder'
     });
   };
 
