@@ -6,7 +6,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "../ui/dialog";
 import { useFolder } from "@/hooks/use-folder";
 import { useForm } from "react-hook-form";
@@ -18,7 +17,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "../ui/form";
 import { Button } from "../ui/button";
@@ -44,7 +42,7 @@ const FolderModal = () => {
       name: values.name,
       timestamp: serverTimestamp(),
       uid: user?.id,
-      isArhive: false,
+      isArchive: false,
     }).then(() => {
       form.reset();
       onClose();
@@ -59,7 +57,6 @@ const FolderModal = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogTrigger>Open</DialogTrigger>
       <DialogContent className="max-w-sm`">
         <DialogHeader>
           <DialogTitle>New folder</DialogTitle>
