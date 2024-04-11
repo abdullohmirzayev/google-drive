@@ -1,12 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { useFolder } from "@/hooks/use-folder";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,10 +20,12 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const FolderModal = () => {
   const { isOpen, onClose } = useFolder();
   const { user } = useUser();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,12 +43,13 @@ const FolderModal = () => {
     }).then(() => {
       form.reset();
       onClose();
+      router.refresh();
     });
 
     toast.promise(promise, {
       loading: "Loading...",
       success: "Folder created",
-      error: 'Error creating folder'
+      error: "Error creating folder",
     });
   };
 
