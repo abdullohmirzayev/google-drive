@@ -13,6 +13,6 @@ export interface IFolderAndFile {
   image: string;
   type: string;
   size: number;
-  isStart: boolean;
+  isStar: boolean;
   archivedTime: Timestamp;
 }
