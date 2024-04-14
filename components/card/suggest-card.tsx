@@ -1,3 +1,5 @@
+'use client'
+
 import { ElementRef, useRef, useState } from "react";
 
 import Image from "next/image";
