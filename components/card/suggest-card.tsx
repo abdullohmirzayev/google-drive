@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
 import { ElementRef, useRef, useState } from "react";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { defineImageAndFile } from "@/lib/utils";
 import { db } from "@/lib/firebase";
@@ -31,6 +31,7 @@ const SuggestCard = ({ item }: SuggestCardProps) => {
   const inputRef = useRef<ElementRef<"input">>(null);
   const { refresh } = useRouter();
   const { user } = useUser();
+  const { documentId } = useParams();
 
   const onStartEditing = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
@@ -43,8 +44,8 @@ const SuggestCard = ({ item }: SuggestCardProps) => {
 
   const onSave = () => {
     const type = item.size ? "files" : "folders";
-
-    const ref = doc(db, type, item.id);
+const folderId = documentId as string
+    const ref = documentId ? doc(db, 'folders', folderId, 'files', item.id) :  doc(db, type, item.id);
 
     const promise = setDoc(ref, {
       ...item,

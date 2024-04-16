@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowBigLeftDash,
   ChevronDown,
   Info,
   LayoutPanelTop,
@@ -9,14 +10,18 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import PopoverActions from "./popover-actions";
 import { useLayout } from "@/hooks/use-layout";
+import { useRouter } from "next/navigation";
 
 interface HeaderProps {
   label: string;
   isHome?: boolean;
+  isDocument?: boolean;
+  isDocumentPage?: boolean;
 }
 
-const Header = ({ label, isHome }: HeaderProps) => {
+const Header = ({ label, isHome, isDocument, isDocumentPage }: HeaderProps) => {
   const { setLayout, layout } = useLayout();
+  const router = useRouter();
 
   return (
     <div className="w-full flex items-center justify-between">
@@ -24,7 +29,7 @@ const Header = ({ label, isHome }: HeaderProps) => {
         <Popover>
           <PopoverTrigger className="flex justify-start">
             <div className="px-4 py-2 hover:bg-secondary transition rounded-full flex items-center space-x-2">
-              <h2 className="text-xl">{label}</h2>
+              <h2 className="text-xl capitalize">{label}</h2>
               <ChevronDown />
             </div>
           </PopoverTrigger>
@@ -33,7 +38,24 @@ const Header = ({ label, isHome }: HeaderProps) => {
           </PopoverContent>
         </Popover>
       ) : (
-        <div className="text-xl">{label}</div>
+        <>
+          {isDocumentPage ? (
+            <>
+              <div className="flex items-center space-x-2 ">
+                <div
+                  className="hover:bg-secondary transition px-4 py-2 rounded-full"
+                  role="button"
+                  onClick={() => router.back()}
+                >
+                  <ArrowBigLeftDash className="w-6 h-6" />
+                </div>
+                <div className="text-xl">{label}</div>
+              </div>
+            </>
+          ) : (
+            <div className="text-xl">{label}</div>
+          )}
+        </>
       )}
 
       {isHome && (
@@ -44,7 +66,7 @@ const Header = ({ label, isHome }: HeaderProps) => {
               className="p-2 hover:bg-secondary rounded-full transition"
               onClick={() => setLayout("grid")}
             >
-              <TableProperties className="w-5 h-5" />
+              {!isDocument && <TableProperties className="w-5 h-5" />}
             </div>
           ) : (
             <div

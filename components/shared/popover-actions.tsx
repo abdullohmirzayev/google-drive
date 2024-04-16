@@ -1,6 +1,6 @@
 "use client";
 
-import { FileUp, Folder, FolderUp } from "lucide-react";
+import { FileUp, Folder, FolderUp, Star, Trash } from "lucide-react";
 import React, { ElementRef, useRef } from "react";
 import { Separator } from "../ui/separator";
 import { useFolder } from "@/hooks/use-folder";
@@ -15,13 +15,15 @@ import { db, storage } from "@/lib/firebase";
 import { useUser } from "@clerk/nextjs";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 
 const PopoverActions = () => {
   const inputRef = useRef<ElementRef<"input">>(null);
   const { onOpen } = useFolder();
   const { user } = useUser();
   const router = useRouter();
+  const { documentId } = useParams();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -38,7 +40,13 @@ const PopoverActions = () => {
       };
     }
 
-    const promise = addDoc(collection(db, "files"), {
+    const folderId = documentId as string;
+
+    const collectionRefs = !documentId
+      ? collection(db, "files")
+      : collection(db, "folders", folderId, "files");
+
+    const promise = addDoc(collectionRefs, {
       name: file.name,
       type: file.type,
       size: file.size,
@@ -46,10 +54,17 @@ const PopoverActions = () => {
       Timestamp: serverTimestamp(),
       isArchive: false,
     }).then((docs) => {
-      const refs = ref(storage, `files/${docs.id}/image`);
+      const refs = documentId
+        ? ref(storage, `files/${folderId}/${docs.id}/image`)
+        : ref(storage, `files/${docs.id}/image`);
+
       uploadString(refs, image, "data_url").then(() => {
         getDownloadURL(refs).then((url) => {
-          updateDoc(doc(db, "files", docs.id), {
+          const docRefs = documentId
+            ? doc(db, "folders", folderId, "files", docs.id)
+            : doc(db, "files", docs.id);
+
+          updateDoc(docRefs, {
             image: url,
           }).then(() => router.refresh());
         });
@@ -65,15 +80,19 @@ const PopoverActions = () => {
 
   return (
     <>
-      <div
-        className="flex items-center hover:bg-secondary transition py-2 px-4 space-x-2 text-sm"
-        role="button"
-        onClick={onOpen}
-      >
-        <Folder className="w-4 h-4" />
-        <span>New folder</span>
-      </div>
-      <Separator />
+      {!documentId && (
+        <>
+          <div
+            className="flex items-center hover:bg-secondary transition py-2 px-4 space-x-2 text-sm"
+            role="button"
+            onClick={onOpen}
+          >
+            <Folder className="w-4 h-4" />
+            <span>New folder</span>
+          </div>
+          <Separator />
+        </>
+      )}
       <label>
         <div
           className="flex items-center hover:bg-secondary transition py-2 px-4 space-x-2 text-sm"
@@ -110,6 +129,30 @@ const PopoverActions = () => {
         />
         <Separator />
       </label>
+
+      {documentId && (
+        <>
+          <Link href={`/document/${documentId}/trash`}>
+            <div
+              className="flex items-center hover:bg-secondary transition py-2 px-4 space-x-2 text-sm"
+              role="button"
+            >
+              <Trash className="w-4 h-4" />
+              <span>Trash</span>
+            </div>
+          </Link>
+          <Separator />
+          <Link href={`/document/${documentId}/starred`}>
+            <div
+              className="flex items-center hover:bg-secondary transition py-2 px-4 space-x-2 text-sm"
+              role="button"
+            >
+              <Star className="w-4 h-4" />
+              <span>Starred</span>
+            </div>
+          </Link>
+        </>
+      )}
     </>
   );
 };
