@@ -35,7 +35,7 @@ const CloudPage = async () => {
   return (
     <>
       <Header label="Storage" />
-      <Storage totalSize={totalSize} />
+      <Storage totalSize={JSON.parse(JSON.stringify(totalSize))} />
 
       <Table className="mt-4">
         <TableHeader>
@@ -49,7 +49,10 @@ const CloudPage = async () => {
         </TableHeader>
         <TableBody>
           {files.map((folder) => (
-            <ListItem key={folder.id} item={folder} />
+            <ListItem
+              key={folder.id}
+              item={JSON.parse(JSON.stringify(folder))}
+            />
           ))}
         </TableBody>
       </Table>
