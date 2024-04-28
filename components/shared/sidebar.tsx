@@ -19,7 +19,7 @@ const Sidebar = () => {
   const totalValue = subscription === "Basic" ? 15_000_000 : 15_000_000_0;
 
   return (
-    <div className="h-[90vh] w-72 fixed top-[10vh] left-0 z-30 bg-[#F6F9FC] dark:bg-[#1f1f1f]">
+    <div className="h-[90vh] w-60 fixed top-[10vh] left-0 z-30 bg-[#F6F9FC] dark:bg-[#1f1f1f]">
       <div className="flex flex-col p-3">
         <Popover>
           <PopoverTrigger asChild>

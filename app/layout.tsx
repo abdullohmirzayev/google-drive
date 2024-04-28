@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import ModalProvider from "@/components/providers/modal-provider";
 import { Toaster } from "sonner";
 import SubscriptionProvider from "@/components/providers/subscription-provider";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,6 +32,17 @@ export default function RootLayout({
             disableTransitionOnChange
             storageKey="google-drive"
           >
+            <NextTopLoader
+              color="#2299DD"
+              initialPosition={0.08}
+              crawlSpeed={200}
+              height={3}
+              crawl={true}
+              showSpinner={false}
+              easing="ease"
+              speed={200}
+              shadow="0 0 10px #2299DD,0 0 5px #2299DD"
+            />
             <Toaster position="top-center" />
             <ModalProvider />
             <SubscriptionProvider>{children}</SubscriptionProvider>
